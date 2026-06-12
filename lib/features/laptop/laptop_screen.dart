@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nexus_app/core/constants/app_strings.dart';
@@ -10,13 +9,13 @@ class LaptopScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final laptopStatus = ref.watch(laptopStatusProvider);
+    final laptopStatus = ref.watch(laptopProvider);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-         icon: const Icon(Icons.arrow_back),
-         onPressed: () => context.pop(),
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
         ),
         title: const Text(AppStrings.laptopTitle),
       ),
@@ -35,50 +34,89 @@ class LaptopScreen extends ConsumerWidget {
                       AppStrings.laptopAgentStatus,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 8.0),
+                    const SizedBox(height: 8),
+
                     laptopStatus.when(
-                      data: (status) => Text('Status: ${status['status']} (Platform: ${status['platform']})'),
+                      data: (status) => Text(
+                        'Status: ${status['status']} (Platform: ${status['platform']})',
+                      ),
                       loading: () => const CircularProgressIndicator(),
                       error: (error, stack) => Text('Error: $error'),
                     ),
-                    const SizedBox(height: 16.0),
+
+                    const SizedBox(height: 16),
+
                     ElevatedButton(
-                      onPressed: () => ref.read(laptopProvider.notifier).fetchStatus(),
+                      onPressed: () {
+                        ref.read(laptopProvider.notifier).fetchStatus();
+                      },
                       child: const Text('Refresh Status'),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 16.0),
-            // Add more controls here for sending commands
+
+            const SizedBox(height: 16),
+
             Text(
               'Quick Actions',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 8.0),
+
+            const SizedBox(height: 8),
+
             Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 ElevatedButton(
-                  onPressed: () => ref.read(laptopProvider.notifier).sendTestCommand('open_app', {'app_name': 'Calculator'}),
+                  onPressed: () => ref
+                      .read(laptopProvider.notifier)
+                      .sendTestCommand(
+                        'open_app',
+                        {'app_name': 'Calculator'},
+                      ),
                   child: const Text('Open Calculator'),
                 ),
+
                 ElevatedButton(
-                  onPressed: () => ref.read(laptopProvider.notifier).sendTestCommand('media_control', {'action': 'play'}),
+                  onPressed: () => ref
+                      .read(laptopProvider.notifier)
+                      .sendTestCommand(
+                        'media_control',
+                        {'action': 'play'},
+                      ),
                   child: const Text('Media Play'),
                 ),
+
                 ElevatedButton(
-                  onPressed: () => ref.read(laptopProvider.notifier).sendTestCommand('media_control', {'action': 'pause'}),
+                  onPressed: () => ref
+                      .read(laptopProvider.notifier)
+                      .sendTestCommand(
+                        'media_control',
+                        {'action': 'pause'},
+                      ),
                   child: const Text('Media Pause'),
                 ),
+
                 ElevatedButton(
-                  onPressed: () => ref.read(laptopProvider.notifier).sendTestCommand('system_control', {'action': 'volume_up'}),
+                  onPressed: () => ref
+                      .read(laptopProvider.notifier)
+                      .sendTestCommand(
+                        'system_control',
+                        {'action': 'volume_up'},
+                      ),
                   child: const Text('Volume Up'),
                 ),
+
                 ElevatedButton(
-                  onPressed: () => ref.read(laptopProvider.notifier).sendTestCommand('system_control', {'action': 'volume_down'}),
+                  onPressed: () => ref
+                      .read(laptopProvider.notifier)
+                      .sendTestCommand(
+                        'system_control',
+                        {'action': 'volume_down'},
+                      ),
                   child: const Text('Volume Down'),
                 ),
               ],

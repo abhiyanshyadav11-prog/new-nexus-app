@@ -59,30 +59,56 @@ class LaptopApiService {
   }
 
   Future<Map<String, dynamic>> getStatus() async {
-    if (_baseUrl == null || _baseUrl!.isEmpty) {
-      return {'status': 'error', 'message': 'Laptop Agent URL not set.'};
+
+   print("BASE URL = $_baseUrl");
+
+   if (_baseUrl == null || _baseUrl!.isEmpty) {
+     print("ERROR: Base URL not set");
+     return {
+      'status': 'error',
+      'message': 'Laptop Agent URL not set.'
+     };
     }
 
-    final uri = Uri.parse('$_baseUrl/status');
-    try {
-      final response = await http.get(uri);
+  final uri = Uri.parse('$_baseUrl/status');
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        return {'status': 'error', 'message': 'HTTP Error: ${response.statusCode}'};
-      }
-    } catch (e) {
-      logger.e('Error getting status from laptop agent: $e');
-      return {'status': 'error', 'message': 'Network Error: $e'};
+  print("STATUS URL = $uri");
+
+  try {
+    final response = await http.get(uri);
+
+    print("STATUS CODE = ${response.statusCode}");
+    print("STATUS BODY = ${response.body}");
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return {
+        'status': 'error',
+        'message': 'HTTP Error: ${response.statusCode}'
+      };
     }
+  } catch (e, st) {
+    print("STATUS ERROR = $e");
+    print("STACK = $st");
+
+    logger.e(
+      'Error getting status from laptop agent: $e',
+      error: e,
+      stackTrace: st,
+    );
+
+    return {
+      'status': 'error',
+      'message': 'Network Error: $e'
+    };
   }
-
+}
   void _connectWebSocket() {
     if (_baseUrl == null || _baseUrl!.isEmpty) return;
 
     try {
-      final wsUrl = Uri.parse(_baseUrl!.replaceFirst('http', 'ws'));
+      final wsUrl = Uri.parse('${_baseUrl!.replaceFirst('http', 'ws')}/ws',);
       _channel = WebSocketChannel.connect(wsUrl);
       logger.i('WebSocket connected to $wsUrl');
 
