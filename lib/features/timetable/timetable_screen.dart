@@ -83,7 +83,7 @@ class TimetableScreen extends ConsumerWidget {
                   decoration: const InputDecoration(labelText: 'Title'),
                 ),
                 DropdownButtonFormField<int>(
-                  value: selectedDay,
+                  initialValue: selectedDay,
                   hint: const Text('Select Day of Week'),
                   items: List.generate(7, (index) => DropdownMenuItem(value: index, child: Text(_getDayName(index)))),
                   onChanged: (value) {
