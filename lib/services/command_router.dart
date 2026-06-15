@@ -9,6 +9,7 @@ import 'package:nexus_app/data/repositories/timetable_repository.dart';
 import 'package:nexus_app/services/ble_service.dart';
 import 'package:nexus_app/services/laptop_api_service.dart';
 import 'package:nexus_app/services/notification_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final commandRouterProvider = Provider<CommandRouter>((ref) {
   return CommandRouter(
@@ -52,7 +53,9 @@ class CommandRouter {
       _handleSetReminder(commandText);
     } else if (commandText.toLowerCase().contains('remember this')) {
       _handleRememberThis(commandText);
-    } else if (commandText.toLowerCase().contains('open')) {
+    } else if (commandText.toLowerCase() == 'open chrome') {
+      _openChrome();
+    }  else if (commandText.toLowerCase().contains('open')) {
       _handleLaptopCommand('open_app', {'app_name': commandText.split('open ')[1]});
     } else if (commandText.toLowerCase().contains('play')) {
       _handleLaptopCommand('media_control', {'action': 'play', 'query': commandText.split('play ')[1]});
@@ -131,6 +134,16 @@ class CommandRouter {
     } catch (e) {
       logger.e("Error sending laptop command: $e");
       // Send NACK to pendant
+    }
+  }
+  Future<void> _openChrome() async {
+   final Uri url = Uri.parse('https://google.com');
+
+   if (await canLaunchUrl(url)) {
+     await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+     );
     }
   }
 }

@@ -43,7 +43,11 @@ class LaptopApiService {
     try {
       final response = await http.post(
         uri,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer nexus_secret_12345",
+        },
         body: jsonEncode(command.toJson()),
       );
 
